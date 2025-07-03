@@ -4,7 +4,8 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
-const { analyzeJavaLogs, generateFixSuggestions } = require('./logAnalyzer');
+const { analyzeJavaLogs, generateFixSuggestions, generateDetailedAnalysis } = require('./logAnalyzer');
+const { generateEnhancedFixSuggestions, generateResolutionSteps, generateErrorSummaryReport } = require('./enhancedAnalyzer');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -46,12 +47,20 @@ app.post('/api/upload', upload.single('logFile'), async (req, res) => {
     
     const analysis = await analyzeJavaLogs(logContent);
     const fixSuggestions = generateFixSuggestions(analysis);
+    const detailedAnalysis = generateDetailedAnalysis(analysis);
+    const enhancedFixes = generateEnhancedFixSuggestions(analysis);
+    const resolutionSteps = generateResolutionSteps(analysis);
+    const summaryReport = generateErrorSummaryReport(analysis, detailedAnalysis);
     
     fs.unlinkSync(filePath);
 
     res.json({
       analysis,
       fixSuggestions,
+      detailedAnalysis,
+      enhancedFixes,
+      resolutionSteps,
+      summaryReport,
       fileName: req.file.originalname,
       fileSize: req.file.size
     });
@@ -71,10 +80,18 @@ app.post('/api/analyze-text', async (req, res) => {
 
     const analysis = await analyzeJavaLogs(logText);
     const fixSuggestions = generateFixSuggestions(analysis);
+    const detailedAnalysis = generateDetailedAnalysis(analysis);
+    const enhancedFixes = generateEnhancedFixSuggestions(analysis);
+    const resolutionSteps = generateResolutionSteps(analysis);
+    const summaryReport = generateErrorSummaryReport(analysis, detailedAnalysis);
 
     res.json({
       analysis,
-      fixSuggestions
+      fixSuggestions,
+      detailedAnalysis,
+      enhancedFixes,
+      resolutionSteps,
+      summaryReport
     });
   } catch (error) {
     console.error('Error analyzing log text:', error);

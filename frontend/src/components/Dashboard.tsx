@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, Upload, FileText, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { Sun, Moon, FileText, AlertCircle, CheckCircle, Info } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import LogUpload from './LogUpload';
 import AnalysisResults from './AnalysisResults';

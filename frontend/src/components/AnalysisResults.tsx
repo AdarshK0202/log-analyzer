@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { AlertCircle, CheckCircle, XCircle, ChevronDown, ChevronUp, Code, RefreshCw } from 'lucide-react';
+import { XCircle, ChevronDown, ChevronUp, Code, RefreshCw } from 'lucide-react';
 import { AnalysisResult } from '../types';
+import ComprehensiveAnalysis from './ComprehensiveAnalysis';
+import ErrorHints from './ErrorHints';
 
 interface AnalysisResultsProps {
   result: AnalysisResult;
@@ -216,6 +218,39 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ result, onReset }) =>
           </div>
         )}
       </div>
+
+      {/* Comprehensive Analysis */}
+      {result.detailedAnalysis && (
+        <>
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg p-6 shadow-lg">
+            <h2 className="text-2xl font-bold mb-2">Comprehensive Error Analysis</h2>
+            <p className="text-blue-100">
+              Detailed insights into error patterns, frequencies, and time-based distributions
+            </p>
+          </div>
+          <ComprehensiveAnalysis 
+            analysis={result.analysis} 
+            detailedAnalysis={result.detailedAnalysis} 
+          />
+        </>
+      )}
+
+      {/* Error Resolution Hints */}
+      {(result.enhancedFixes || result.resolutionSteps || result.summaryReport) && (
+        <>
+          <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg p-6 shadow-lg">
+            <h2 className="text-2xl font-bold mb-2">Error Resolution Guide</h2>
+            <p className="text-green-100">
+              Contextual hints, step-by-step solutions, and quick fixes for identified errors
+            </p>
+          </div>
+          <ErrorHints 
+            enhancedFixes={result.enhancedFixes}
+            resolutionSteps={result.resolutionSteps}
+            summaryReport={result.summaryReport}
+          />
+        </>
+      )}
     </div>
   );
 };
