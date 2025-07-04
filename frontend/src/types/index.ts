@@ -177,6 +177,117 @@ export interface AnalysisResult {
   enhancedFixes?: EnhancedFix[];
   resolutionSteps?: ResolutionStep[];
   summaryReport?: SummaryReport;
+  apiPerformance?: ApiPerformanceAnalysis;
   fileName?: string;
   fileSize?: number;
+}
+
+export interface ApiPerformanceAnalysis {
+  summary: {
+    totalApiCalls: number;
+    averageResponseTime: number;
+    minResponseTime: number;
+    maxResponseTime: number;
+    totalProcessingTime: number;
+    successCount: number;
+    failureCount: number;
+    apiCallsByCommand: Record<string, ApiCommandMetrics>;
+    apiCallsByClass: Record<string, ApiClassMetrics>;
+    performanceByHour: Record<string, HourlyMetrics>;
+    slowApis: ApiMetricSummary[];
+    fastApis: ApiMetricSummary[];
+    failedApis: ApiCall[];
+    successRate: string;
+  };
+  endpoints: Record<string, EndpointMetrics>;
+  timeline: ApiTimelineEntry[];
+  performanceDistribution: {
+    under100ms: number;
+    under500ms: number;
+    under1000ms: number;
+    under5000ms: number;
+    over5000ms: number;
+  };
+  recommendations: ApiPerformanceRecommendation[];
+}
+
+export interface ApiCommandMetrics {
+  count: number;
+  totalTime: number;
+  avgTime: number;
+  minTime: number;
+  maxTime: number;
+  successCount: number;
+  failureCount: number;
+}
+
+export interface ApiClassMetrics {
+  count: number;
+  totalTime: number;
+  avgTime: number;
+  commands: string[];
+}
+
+export interface HourlyMetrics {
+  count: number;
+  totalTime: number;
+  avgTime: number;
+}
+
+export interface ApiMetricSummary {
+  className: string;
+  commandName: string;
+  avgResponseTime: number;
+  callCount: number;
+  successRate: string;
+  p95: number;
+  p99: number;
+}
+
+export interface ApiCall {
+  lineNumber: number;
+  timestamp: string | null;
+  requestId: string | null;
+  className: string;
+  commandName: string;
+  returnCode: number;
+  statusKey: string;
+  processingTime: number;
+  isSuccess: boolean;
+  line: string;
+}
+
+export interface EndpointMetrics {
+  className: string;
+  commandName: string;
+  calls: ApiCall[];
+  metrics: {
+    count: number;
+    avgResponseTime: number;
+    minResponseTime: number;
+    maxResponseTime: number;
+    p50: number;
+    p95: number;
+    p99: number;
+    successRate: string;
+  };
+}
+
+export interface ApiTimelineEntry {
+  timestamp: string;
+  commandName: string;
+  className: string;
+  processingTime: number;
+  status: 'SUCCESS' | 'FAILURE';
+  returnCode: number;
+}
+
+export interface ApiPerformanceRecommendation {
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  category: string;
+  issue: string;
+  description: string;
+  suggestions: string[];
+  affectedApis?: string[];
+  peakHours?: string[];
 }

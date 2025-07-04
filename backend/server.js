@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const { analyzeJavaLogs, generateFixSuggestions, generateDetailedAnalysis } = require('./logAnalyzer');
 const { generateEnhancedFixSuggestions, generateResolutionSteps, generateErrorSummaryReport } = require('./enhancedAnalyzer');
+const { analyzeApiPerformance } = require('./apiPerformanceAnalyzer');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -51,6 +52,7 @@ app.post('/api/upload', upload.single('logFile'), async (req, res) => {
     const enhancedFixes = generateEnhancedFixSuggestions(analysis);
     const resolutionSteps = generateResolutionSteps(analysis);
     const summaryReport = generateErrorSummaryReport(analysis, detailedAnalysis);
+    const apiPerformance = await analyzeApiPerformance(logContent);
     
     fs.unlinkSync(filePath);
 
@@ -61,6 +63,7 @@ app.post('/api/upload', upload.single('logFile'), async (req, res) => {
       enhancedFixes,
       resolutionSteps,
       summaryReport,
+      apiPerformance,
       fileName: req.file.originalname,
       fileSize: req.file.size
     });
@@ -84,6 +87,7 @@ app.post('/api/analyze-text', async (req, res) => {
     const enhancedFixes = generateEnhancedFixSuggestions(analysis);
     const resolutionSteps = generateResolutionSteps(analysis);
     const summaryReport = generateErrorSummaryReport(analysis, detailedAnalysis);
+    const apiPerformance = await analyzeApiPerformance(logText);
 
     res.json({
       analysis,
@@ -91,7 +95,8 @@ app.post('/api/analyze-text', async (req, res) => {
       detailedAnalysis,
       enhancedFixes,
       resolutionSteps,
-      summaryReport
+      summaryReport,
+      apiPerformance
     });
   } catch (error) {
     console.error('Error analyzing log text:', error);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Moon, FileText, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { Sun, Moon, FileText, AlertCircle, CheckCircle, Info, Activity } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import LogUpload from './LogUpload';
 import AnalysisResults from './AnalysisResults';
@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${analysisResult?.apiPerformance ? 'lg:grid-cols-5' : 'lg:grid-cols-4'} gap-4 mb-8`}>
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -86,6 +86,22 @@ const Dashboard: React.FC = () => {
               <Info className="h-8 w-8 text-yellow-400" />
             </div>
           </div>
+
+          {analysisResult?.apiPerformance && (
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                    API Calls
+                  </p>
+                  <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    {analysisResult.apiPerformance.summary.totalApiCalls}
+                  </p>
+                </div>
+                <Activity className="h-8 w-8 text-blue-400" />
+              </div>
+            </div>
+          )}
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <div className="flex items-center justify-between">

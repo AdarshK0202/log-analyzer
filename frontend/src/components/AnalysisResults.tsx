@@ -3,6 +3,7 @@ import { XCircle, ChevronDown, ChevronUp, Code, RefreshCw } from 'lucide-react';
 import { AnalysisResult } from '../types';
 import ComprehensiveAnalysis from './ComprehensiveAnalysis';
 import ErrorHints from './ErrorHints';
+import ApiPerformance from './ApiPerformance';
 
 interface AnalysisResultsProps {
   result: AnalysisResult;
@@ -249,6 +250,19 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({ result, onReset }) =>
             resolutionSteps={result.resolutionSteps}
             summaryReport={result.summaryReport}
           />
+        </>
+      )}
+
+      {/* API Performance Analysis */}
+      {result.apiPerformance && (
+        <>
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg p-6 shadow-lg">
+            <h2 className="text-2xl font-bold mb-2">API Performance Insights</h2>
+            <p className="text-indigo-100">
+              Detailed metrics on API response times, success rates, and performance bottlenecks
+            </p>
+          </div>
+          <ApiPerformance apiPerformance={result.apiPerformance} />
         </>
       )}
     </div>
